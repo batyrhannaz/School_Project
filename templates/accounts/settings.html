@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Настройки{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Настройки</h1>
+
+  <div class="panel reveal">
+    <h3>Внешний вид</h3>
+    <p class="muted">Хранится в этом браузере.</p>
+    <form method="post" action="{% url 'set_lang' %}" class="lang-form">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <label for="lang-select">Язык</label> <select name="lang" id="lang-select" onchange="this.form.submit()" >
+        <option value="ru" {% if request.LANG != 'ky' %}selected{% endif %}>Русский</option>
+        <option value="ky" {% if request.LANG == 'ky' %}selected{% endif %}>Кыргызча</option>
+      </select></form>
+    <label class="check"><input type="radio" name="theme" value="light" data-setting="theme"> Светлая тема</label>
+    <label class="check"><input type="radio" name="theme" value="dark" data-setting="theme"> Тёмная тема</label>
+    <p class="muted">Размер текста</p>
+    <label class="check"><input type="radio" name="fontsize" value="small" data-setting="fontsize"> Мелкий</label>
+    <label class="check"><input type="radio" name="fontsize" value="normal" data-setting="fontsize"> Обычный</label>
+    <label class="check"><input type="radio" name="fontsize" value="large" data-setting="fontsize"> Крупный</label>
+    <label class="check"><input type="checkbox" data-setting="sidebar"> Сворачивать боковое меню по умолчанию</label>
+    <label class="check"><input type="checkbox" data-setting="motion"> Отключить анимации</label>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="form">{% csrf_token %}
+    <div class="panel reveal">
+      <h3>Аккаунт</h3>
+      {% if profile %}
+      <div class="ava-row">
+        <span class="ava-preview">{% if profile.photo %}<img src="{{ profile.photo.url }}" alt="">{% else %}{{ user.username|slice:":1"|upper }}{% endif %}</span>
+        <div>{{ form.photo }}
+          {% if profile.photo %}<label class="check">{{ form.remove_photo }} {{ form.remove_photo.label }}</label>{% endif %}</div>
+      </div>
+      {% endif %}
+      {% for e in form.photo.errors %}<p class="flash error">{{ e }}</p>{% endfor %}
+      <p><label for="id_first_name">Имя</label>{{ form.first_name }}</p>
+      <p><label for="id_last_name">Фамилия</label>{{ form.last_name }}</p>
+      <div class="row"><span>Почта</span><b>{{ user.email|default:"не привязана" }}</b></div>
+      <a href="{% url 'profile' %}">{% if user.email %}Изменить почту{% else %}Привязать Gmail{% endif %}</a> ·
+      <a href="{% url 'password_change' %}">Сменить пароль</a>
+    </div>
+
+    {% if profile.role == "parent" %}
+    <div class="panel reveal"><h3>Родитель</h3>
+      <p><label for="id_default_child">{{ form.default_child.label }}</label>{{ form.default_child }}</p>
+      <p class="muted">Этот ребёнок будет открываться первым в расписании и оценках.</p></div>
+    {% elif profile.role == "teacher" %}
+    <div class="panel reveal"><h3>Учитель</h3>
+      <p><label for="id_default_class">{{ form.default_class.label }}</label>{{ form.default_class }}</p>
+      <p class="muted">В форме «Выставить оценку» будут только ученики этого класса.</p></div>
+    {% endif %}
+
+    {% if profile %}
+    <div class="panel reveal">
+      <h3>Уведомления на почту</h3>
+      <label class="check">{{ form.notify_grades }} {{ form.notify_grades.label }}</label>
+      <label class="check">{{ form.notify_books }} {{ form.notify_books.label }}</label>
+      <label class="check">{{ form.notify_digest }} {{ form.notify_digest.label }}</label>
+      {% if not user.email %}<p class="muted">Почта не привязана, письма не придут. <a href="{% url 'profile' %}">Привязать Gmail</a></p>{% endif %}
+    </div>
+    {% endif %}
+    <button class="btn">Сохранить</button>
+  </form>
+
+  <div class="panel reveal sec">
+    <h3>Безопасность</h3>
+    <div class="row"><span>Двухфакторный вход</span>
+      <b>{% if profile.totp_enabled %}включён{% else %}выключен{% endif %}</b></div>
+    <a href="{% url 'two_factor' %}">{% if profile.totp_enabled %}Отключить{% else %}Включить{% endif %}</a>
+    <div class="row"><span>Активных входов (устройств)</span><b>{{ sessions_count }}</b></div>
+    <form method="post" action="{% url 'logout_everywhere' %}">{% csrf_token %}
+      <button class="btn ghost-dark">Выйти на всех других устройствах</button></form>
+    <h4>Последние входы</h4>
+    {% for e in events %}<div class="row"><span>{{ e.created|date:"d.m.Y H:i" }}</span><small>{{ e.ip|default:"—" }}</small></div>
+    {% empty %}<p class="empty">Пока нет записей.</p>{% endfor %}
+  </div>
+
+  <div class="panel reveal sec">
+    <h3>Ваши данные</h3>
+    <a href="{% url 'export_data' %}">Скачать мои данные (CSV, открывается в Excel)</a>
+    {% if not user.is_staff %}<br><a class="bad" href="{% url 'delete_account' %}">Отключить мой аккаунт</a>{% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Код подтверждения{% endblock %}
+{% block body %}
+<h1>Код подтверждения</h1>
+<p class="sub">Введите шестизначный код из приложения-аутентификатора.</p>
+<form method="post" class="auth-form">
+  {% csrf_token %}
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  <label>Код<input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="000000" autofocus required></label>
+  <button class="role teacher submit" type="submit">Войти</button>
+</form>
+<div class="auth-links"><a class="back" href="{% url 'login' %}">← Отмена</a></div>
+{% endblock %}

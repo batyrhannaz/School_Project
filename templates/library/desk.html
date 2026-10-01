@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Выдача и возврат{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Выдача и возврат</h1>
+  <div class="panel reveal narrow-panel">
+    <h3>Выдать книгу</h3>
+    <form method="post" class="form">{% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn">Выдать</button>
+    </form>
+  </div>
+
+  <h3>Сейчас на руках ({{ active|length }})</h3>
+  {% if active %}
+  <table class="table">
+    <tr><th>Читатель</th><th>Книга</th><th>Вернуть до</th><th></th></tr>
+    {% for l in active %}
+    <tr {% if l.due_date < today %}class="overdue"{% endif %}>
+      <td>{{ l.user.get_full_name|default:l.user.username }}</td>
+      <td>{{ l.copy.book.title }} <small class="muted">{{ l.copy.inventory_number }}</small></td>
+      <td>{{ l.due_date|date:"d.m.Y" }}</td>
+      <td><form method="post" action="{% url 'return_loan' l.pk %}">{% csrf_token %}<button class="btn ghost-dark">Принять</button></form></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="empty">Все книги в библиотеке.</p>{% endif %}
+</section>
+{% endblock %}

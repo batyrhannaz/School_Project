@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Отключение аккаунта{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Отключить аккаунт</h1>
+  <p>После отключения вы не сможете войти. Оценки и история выдач книг останутся в школьной базе. Вернуть аккаунт может администратор.</p>
+  {% if has_loans %}
+  <p class="flash error">У вас есть невозвращённые книги. Сначала верните их в библиотеку.</p>
+  {% else %}
+  <form method="post" class="form">{% csrf_token %}
+    <p><label for="id_password">Введите пароль для подтверждения</label><input type="password" name="password" id="id_password" required></p>
+    <button class="btn bad-btn">Отключить аккаунт</button>
+  </form>
+  {% endif %}
+  <p><a href="{% url 'settings' %}">← Назад в настройки</a></p>
+</section>
+{% endblock %}

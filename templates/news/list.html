@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Новости{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Новости</h1>
+  {% if items %}
+  <div class="grid">
+    {% for n in items %}
+    <a class="card reveal" href="{% url 'news_detail' n.pk %}">
+      {% if n.image %}<img src="{{ n.image.url }}" alt="">{% endif %}
+      <small>{{ n.created|date:"d.m.Y" }}</small>
+      <h3>{{ n.title }}</h3>
+      <p>{{ n.text|truncatechars:140 }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}<p class="empty">Новостей пока нет.</p>{% endif %}
+</section>
+{% endblock %}

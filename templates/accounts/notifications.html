@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Уведомления{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Уведомления</h1>
+  {% for n in items %}
+  <div class="panel notif {% if not n.is_read %}unread{% endif %}">
+    {% if n.url %}<a href="{{ n.url }}">{{ n.text }}</a>{% else %}{{ n.text }}{% endif %}
+    <small class="muted">{{ n.created|date:"d.m.Y H:i" }}</small>
+  </div>
+  {% empty %}<p class="empty">Новых уведомлений нет.</p>{% endfor %}
+</section>
+{% endblock %}

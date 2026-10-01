@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Отметить посещаемость{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Посещаемость</h1>
+  <form method="get" class="filters">
+    <select name="class" required><option value="">Класс</option>
+      {% for c in classes %}<option value="{{ c.pk }}" {% if cls and cls.pk == c.pk %}selected{% endif %}>{{ c }}</option>{% endfor %}</select>
+    <select name="subject" required><option value="">Предмет</option>
+      {% for s in subjects %}<option value="{{ s.pk }}" {% if subject and subject.pk == s.pk %}selected{% endif %}>{{ s }}</option>{% endfor %}</select>
+    <input type="date" name="date" value="{{ date|date:'Y-m-d' }}">
+    <button class="btn">Показать</button>
+  </form>
+
+  {% if students %}
+  <form method="post">{% csrf_token %}
+    <input type="hidden" name="class" value="{{ cls.pk }}">
+    <input type="hidden" name="subject" value="{{ subject.pk }}">
+    <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
+    <table class="table">
+      <tr><th>Ученик</th><th>Статус ({{ subject }}, {{ date|date:"d.m.Y" }})</th></tr>
+      {% for s in students %}
+      <tr><td>{{ s.get_full_name|default:s.username }}</td>
+        <td class="att">{% for key, label in statuses %}
+          <label class="opt {{ key }}"><input type="radio" name="status_{{ s.pk }}" value="{{ key }}" {% if s.current == key %}checked{% endif %}> {{ label }}</label>
+        {% endfor %}</td></tr>
+      {% endfor %}
+    </table>
+    <button class="btn">Сохранить</button>
+  </form>
+  {% elif cls and subject %}<p class="empty">В этом классе нет учеников.</p>
+  {% else %}<p class="empty">Выберите класс, предмет и дату.</p>{% endif %}
+</section>
+{% endblock %}

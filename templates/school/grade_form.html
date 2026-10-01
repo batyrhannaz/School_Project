@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Выставить оценку{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Выставить оценку</h1>
+  <form method="post" class="form">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn">Сохранить</button>
+  </form>
+  {% if recent %}<h3>Последние оценки</h3>
+  {% for g in recent %}<div class="row"><span class="g g{{ g.value }}">{{ g.value }}</span><span>{{ g.student.get_full_name|default:g.student.username }}</span><small>{{ g.subject }} · {{ g.date|date:"d.m" }}</small></div>{% endfor %}
+  {% endif %}
+</section>
+{% endblock %}

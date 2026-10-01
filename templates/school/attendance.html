@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Посещаемость{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>{% if role == "parent" %}Посещаемость детей{% else %}Посещаемость{% endif %}</h1>
+  {% include "school/_child_tabs.html" %}
+  <div class="pills">
+    {% for label, n, key in summary %}<div class="pill {{ key }}"><b>{{ n }}</b><span>{{ label }}</span></div>{% endfor %}
+  </div>
+  {% if problems %}
+  <h3>Пропуски и опоздания</h3>
+  <table class="table">
+    <tr><th>Дата</th><th>Предмет</th><th>Статус</th></tr>
+    {% for r in problems %}<tr><td>{{ r.date|date:"d.m.Y" }}</td><td>{{ r.subject }}</td><td>{{ r.get_status_display }}</td></tr>{% endfor %}
+  </table>
+  {% elif total %}<p class="empty">Пропусков нет. Так держать!</p>
+  {% else %}<p class="empty">Отметок пока нет.</p>{% endif %}
+</section>
+{% endblock %}

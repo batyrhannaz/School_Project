@@ -1,0 +1,106 @@
+{% load static %}<!DOCTYPE html>
+<html lang="{{ request.LANG|default:'ru' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Школа{% endblock %}</title>
+  <script>try{var d=document.documentElement,t=localStorage.getItem("theme");if(t)d.dataset.theme=t;if(localStorage.getItem("motion")==="reduced")d.dataset.motion="reduced";var f=localStorage.getItem("fontsize");if(f)d.dataset.fontsize=f;}catch(e){}</script>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+{% with u=request.resolver_match.url_name %}
+<aside class="sidebar" id="sidebar">
+  <div class="side-profile">
+    <a class="side-me" href="{% if user.is_authenticated %}{% url 'profile' %}{% else %}{% url 'login' %}{% endif %}" title="Мой профиль">
+      <span class="avatar">{% if user.profile.photo %}<img src="{{ user.profile.photo.url }}" alt="">{% elif user.is_authenticated %}{{ user.username|slice:":1"|upper }}{% else %}?{% endif %}</span>
+    <span class="who label">
+      <b>{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Гость{% endif %}</b>
+      <small>{% if user.is_staff %}Сотрудник{% elif user.profile %}{{ user.profile.get_role_display }}{% elif user.is_authenticated %}Читатель{% else %}Войдите в аккаунт{% endif %}</small>
+    </span>
+    </a>
+    <button class="side-toggle" id="sideToggle" aria-label="Свернуть или развернуть меню" aria-expanded="true">
+      <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <form class="side-search" action="{% url 'catalog' %}" method="get" role="search">
+    <button type="button" id="searchIcon" aria-label="Поиск книг"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></button>
+    <input type="search" name="q" id="sideSearch" class="label" placeholder="Найти книгу" aria-label="Найти книгу">
+  </form>
+
+  <ul class="side-list">
+    {% if user.is_authenticated %}
+    {% if role == 'parent' %}{% include 'includes/side_link.html' with url='cabinet' label='Мои дети' d='M9 11a3 3 0 100-6 3 3 0 000 6zM3 19c0-3 2.7-5 6-5s6 2 6 5M17 10a2.3 2.3 0 100-4.6M17 14c2.4 0 4 1.5 4 4' %}{% else %}{% include 'includes/side_link.html' with url='cabinet' label='Мой кабинет' d='M4 11l8-7 8 7v9h-5v-6H9v6H4z' %}{% endif %}
+    <li><a href="{% url 'notifications' %}" {% if u == 'notifications' %}class="active"{% endif %} title="Уведомления">
+      <svg viewBox="0 0 24 24"><path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21h4"/></svg><span class="label">Уведомления</span>
+      {% if unread %}<span class="badge">{{ unread }}</span>{% endif %}</a></li>
+    {% if role == 'student' %}
+      {% include 'includes/side_link.html' with url='schedule' label='Расписание' d='M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1zM4 10h16M8 3v4M16 3v4' %}
+      {% include 'includes/side_link.html' with url='homework' label='Домашние задания' d='M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h6' %}
+      {% include 'includes/side_link.html' with url='grades' label='Оценки' d='M12 4l2.4 5 5.6.7-4.1 3.8 1.1 5.5L12 16.3 7 19l1.1-5.5L4 9.7l5.6-.7z' %}
+      {% include 'includes/side_link.html' with url='attendance' label='Посещаемость' d='M5 6l2 2 3-3M5 14l2 2 3-3M13 7h6M13 15h6' %}
+    {% elif role == 'parent' %}
+      {% include 'includes/side_link.html' with url='schedule' label='Расписание детей' d='M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1zM4 10h16M8 3v4M16 3v4' %}
+      {% include 'includes/side_link.html' with url='homework' label='Домашние задания' d='M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h6' %}
+      {% include 'includes/side_link.html' with url='grades' label='Оценки детей' d='M12 4l2.4 5 5.6.7-4.1 3.8 1.1 5.5L12 16.3 7 19l1.1-5.5L4 9.7l5.6-.7z' %}
+      {% include 'includes/side_link.html' with url='attendance' label='Посещаемость детей' d='M5 6l2 2 3-3M5 14l2 2 3-3M13 7h6M13 15h6' %}
+    {% elif role == 'teacher' %}
+      {% include 'includes/side_link.html' with url='classes' label='Мои классы' d='M9 11a3 3 0 100-6 3 3 0 000 6zM3 19c0-3 2.7-5 6-5s6 2 6 5M17 10a2.3 2.3 0 100-4.6M17 14c2.4 0 4 1.5 4 4' %}
+      {% include 'includes/side_link.html' with url='add_grade' label='Выставить оценку' d='M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM12 8v8M8 12h8' %}
+      {% include 'includes/side_link.html' with url='mark_attendance' label='Посещаемость' d='M5 6l2 2 3-3M5 14l2 2 3-3M13 7h6M13 15h6' %}
+      {% include 'includes/side_link.html' with url='homework' label='Домашние задания' d='M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h6' also='add_homework' %}
+      {% include 'includes/side_link.html' with url='schedule' label='Мои уроки' d='M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1zM4 10h16M8 3v4M16 3v4' %}
+    {% elif role == 'librarian' %}
+      {% include 'includes/side_link.html' with url='desk' label='Выдача и возврат' d='M7 8h11l-3-3M17 16H6l3 3' %}
+      {% include 'includes/side_link.html' with url='debtors' label='Должники' d='M12 4a8 8 0 100 16 8 8 0 000-16zM12 8v5l3 2' %}
+      {% include 'includes/side_link.html' with url='add_book' label='Добавить книгу' d='M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1zM12 8v8M8 12h8' %}
+    {% endif %}
+    <li class="side-section"><span class="label">Библиотека</span></li>
+    {% include 'includes/side_link.html' with url='catalog' label='Каталог книг' d='M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3zM5 17a3 3 0 013-3h10' also='book_detail' %}
+    <li><a href="{% url 'my_loans' %}" {% if u == 'my_loans' %}class="active"{% endif %} title="{% if role == 'parent' %}Книги детей{% else %}Мои книги{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M8 4h8a2 2 0 012 2v14a1 1 0 01-1 1H7a1 1 0 01-1-1V6a2 2 0 012-2zM9 12h6M9 16h4"/></svg><span class="label">{% if role == 'parent' %}Книги детей{% else %}Мои книги{% endif %}</span>
+      {% if active_loans %}<span class="badge">{{ active_loans }}</span>{% endif %}</a></li>
+    <li class="side-section"><span class="label">Школа</span></li>
+    {% include 'includes/side_link.html' with url='news_list' label='Новости' d='M6 4h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2zM8 9h8M8 13h8M8 17h5' also='news_detail' %}
+    {% else %}
+    {% include 'includes/side_link.html' with url='home' label='Главная' d='M4 11l8-7 8 7v9h-5v-6H9v6H4z' %}
+    {% include 'includes/side_link.html' with url='news_list' label='Новости' d='M6 4h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2zM8 9h8M8 13h8M8 17h5' also='news_detail' %}
+    {% include 'includes/side_link.html' with url='catalog' label='Библиотека' d='M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3zM5 17a3 3 0 013-3h10' also='book_detail' %}
+    {% endif %}
+  </ul>
+
+  <div class="side-foot">
+    <form method="post" action="{% url 'set_lang' %}">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <input type="hidden" name="lang" value="{% if request.LANG == 'ky' %}ru{% else %}ky{% endif %}">
+      <button type="submit" title="Кыргызча / Русский" aria-label="Language">{% if request.LANG == 'ky' %}RU{% else %}KY{% endif %}</button></form>
+    <button type="button" id="themeToggle" title="Тёмная или светлая тема" aria-label="Сменить тему">
+      <svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 100 16 8 8 0 0010.5-5.5z"/></svg>
+    </button>
+    {% if user.is_authenticated %}
+    <a href="{% url 'settings' %}" title="Настройки" aria-label="Настройки">
+      <svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9M15 5v4M9 15v4"/></svg></a>
+    {% endif %}
+    {% if user.is_staff %}
+    <a href="{% url 'admin:index' %}" title="Админка" aria-label="Админка">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></a>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+      <button type="submit" title="Выйти" aria-label="Выйти"><svg viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/></svg></button></form>
+    {% else %}
+    <a href="{% url 'login' %}" title="Войти" aria-label="Войти"><svg viewBox="0 0 24 24"><path d="M14 4h5v16h-5M9 8l-4 4 4 4M5 12h10"/></svg></a>
+    {% endif %}
+  </div>
+</aside>
+{% endwith %}
+<div class="page">
+  <main>
+    {% if messages %}<div class="wrap flash-wrap">{% for m in messages %}<p class="flash {{ m.tags }}">{{ m }}</p>{% endfor %}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer"><p>© Наша школа</p></footer>
+</div>
+<script src="{% static 'js/animations.js' %}"></script>
+</body>
+</html>

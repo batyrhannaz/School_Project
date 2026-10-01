@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Мой профиль{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Мой профиль</h1>
+  <div class="panel">
+    <div class="row"><span>Логин</span><b>{{ user.username }}</b></div>
+    <div class="row"><span>Роль</span><b>{% if user.profile %}{{ user.profile.get_role_display }}{% elif user.is_staff %}Сотрудник{% else %}—{% endif %}</b></div>
+    <div class="row"><span>Почта</span><b>{{ user.email|default:"не привязана" }}</b></div>
+  </div>
+
+  <h3>Привязать Gmail</h3>
+  <p class="muted">Нужна, чтобы сбросить пароль, если вы его забудете. Мы отправим письмо со ссылкой, и почта привяжется после подтверждения.</p>
+  <form method="post" class="form">{% csrf_token %}
+    <p><label for="id_email">Gmail или другая почта</label>
+    <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" placeholder="name@gmail.com" required></p>
+    {% for e in form.email.errors %}<p class="flash error">{{ e }}</p>{% endfor %}
+    <button class="btn">Отправить письмо для подтверждения</button>
+  </form>
+</section>
+{% endblock %}

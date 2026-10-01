@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Мой кабинет{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Здравствуйте, {{ user.get_full_name|default:user.username }}!</h1>
+  <p class="muted">{{ today|date:"l, j E Y" }}</p>
+
+  {% if role == "student" %}
+  <p>Класс: <b>{{ school_class|default:"не назначен, обратитесь к администратору" }}</b></p>
+  <div class="cols">
+    <div class="panel reveal"><h3>Уроки сегодня</h3>
+      {% for l in today_lessons %}<div class="row"><span class="num">{{ l.number }}</span><span>{{ l.subject }}</span><small>каб. {{ l.room }}</small></div>
+      {% empty %}<p class="empty">Сегодня уроков нет.</p>{% endfor %}
+      <a href="{% url 'schedule' %}">Всё расписание</a></div>
+    <div class="panel reveal"><h3>Последние оценки</h3>
+      {% for g in latest_grades %}<div class="row"><span class="g g{{ g.value }}">{{ g.value }}</span><span>{{ g.subject }}</span><small>{{ g.date|date:"d.m" }}</small></div>
+      {% empty %}<p class="empty">Оценок пока нет.</p>{% endfor %}
+      <a href="{% url 'grades' %}">Все оценки</a></div>
+    <div class="panel reveal"><h3>Книги на руках</h3>
+      {% for l in on_hand %}<div class="row"><span>{{ l.copy.book.title }}</span><small {% if l.is_overdue %}class="bad"{% endif %}>до {{ l.due_date|date:"d.m" }}</small></div>
+      {% empty %}<p class="empty">Нет выданных книг.</p>{% endfor %}
+      <a href="{% url 'catalog' %}">Открыть каталог</a></div>
+    <div class="panel reveal"><h3>Домашние задания</h3>
+      {% for h in homework_next %}<div class="row"><span>{{ h.subject }}: {{ h.text|truncatechars:50 }}</span><small>до {{ h.due_date|date:"d.m" }}</small></div>
+      {% empty %}<p class="empty">Заданий нет.</p>{% endfor %}
+      <a href="{% url 'homework' %}">Все задания</a></div>
+  </div>
+
+  {% elif role == "teacher" %}
+  <div class="cols">
+    <div class="panel reveal"><h3>Мои уроки сегодня</h3>
+      {% for l in today_lessons %}<div class="row"><span class="num">{{ l.number }}</span><span>{{ l.subject }} · {{ l.school_class }}</span><small>каб. {{ l.room }}</small></div>
+      {% empty %}<p class="empty">Сегодня уроков нет.</p>{% endfor %}
+      <a href="{% url 'schedule' %}">Всё расписание</a></div>
+    <div class="panel reveal"><h3>Мои классы</h3>
+      {% for c in my_classes %}<div class="row"><span>{{ c }}</span></div>{% empty %}<p class="empty">Классы не назначены.</p>{% endfor %}
+      <a href="{% url 'classes' %}">Открыть классы</a></div>
+    <div class="panel reveal"><h3>Последние выставленные оценки</h3>
+      {% for g in given %}<div class="row"><span class="g g{{ g.value }}">{{ g.value }}</span><span>{{ g.student.get_full_name|default:g.student.username }}</span><small>{{ g.subject }}</small></div>
+      {% empty %}<p class="empty">Пока нет.</p>{% endfor %}
+      <a class="btn" href="{% url 'add_grade' %}">Выставить оценку</a></div>
+  </div>
+
+  {% elif role == "parent" %}
+  {% for c in cards %}
+  <div class="panel reveal child">
+    <h3>{{ c.child.get_full_name|default:c.child.username }} <small class="muted">{{ c.school_class|default:"без класса" }}</small></h3>
+    <div class="row"><span>Средний балл</span><b>{{ c.avg|default_if_none:"—"|floatformat:2 }}</b></div>
+    <div class="row"><span>Книги на руках</span><b>{{ c.books }}</b></div>
+    <div class="row"><span>Домашних заданий впереди</span><b>{{ c.homework }}</b></div>
+    {% for g in c.latest %}<div class="row"><span class="g g{{ g.value }}">{{ g.value }}</span><span>{{ g.subject }}</span><small>{{ g.date|date:"d.m" }}</small></div>{% endfor %}
+    <a href="{% url 'grades' %}?child={{ c.child.pk }}">Оценки</a> · <a href="{% url 'schedule' %}?child={{ c.child.pk }}">Расписание</a>
+  </div>
+  {% empty %}<p class="empty">К вашему профилю пока не привязаны дети. Обратитесь к администратору.</p>{% endfor %}
+
+  {% elif role == "librarian" %}
+  <div class="cols">
+    <div class="panel reveal"><h3>Книги на руках</h3><p class="big">{{ active_count }}</p>
+      <a class="btn" href="{% url 'desk' %}">Выдача и возврат</a></div>
+    <div class="panel reveal"><h3>Просрочено</h3><p class="big {% if overdue_count %}bad{% endif %}">{{ overdue_count }}</p>
+      {% for l in overdue %}<div class="row"><span>{{ l.copy.book.title }}</span><small>{{ l.user.get_full_name|default:l.user.username }}</small></div>{% endfor %}
+      <a href="{% url 'debtors' %}">Все должники</a></div>
+    <div class="panel reveal"><h3>Каталог</h3><p class="muted">Добавьте новую книгу и экземпляры.</p>
+      <a class="btn" href="{% url 'add_book' %}">Добавить книгу</a></div>
+  </div>
+
+  {% else %}
+  <p>У этого аккаунта нет роли. Роль выбирается в админке: Пользователи → блок «Профиль».</p>
+  {% if user.is_staff %}<a class="btn" href="{% url 'admin:index' %}">Открыть админку</a>{% endif %}
+  {% endif %}
+</section>
+{% endblock %}

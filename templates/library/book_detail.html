@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>{{ book.title }}</h1>
+  <p class="muted">{{ book.author }}{% if book.category %} · {{ book.category }}{% endif %}</p>
+  {% if book.cover %}<img class="cover" src="{{ book.cover.url }}" alt="">{% endif %}
+  <p class="prose">{{ book.description|default:"Описания пока нет."|linebreaksbr }}</p>
+  {% if book.available_count %}<span class="tag ok">В наличии: {{ book.available_count }}</span>
+  <p>Чтобы взять книгу, обратитесь к библиотекарю.</p>
+  {% else %}<span class="tag no">Все экземпляры выданы</span>{% endif %}
+  <p><a href="{% url 'catalog' %}">Назад в каталог</a></p>
+</section>
+{% endblock %}

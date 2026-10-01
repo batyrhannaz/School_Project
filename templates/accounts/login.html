@@ -1,0 +1,16 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Вход: {{ role_label }}{% endblock %}
+{% block body %}
+<h1>Вход: {{ role_label }}</h1>
+<p class="sub">Введите логин и пароль</p>
+<form method="post" class="auth-form {{ role }}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% if form.non_field_errors %}<p class="error" role="alert">{{ form.non_field_errors.0 }}</p>{% endif %}
+  <label>Логин<input type="text" name="username" value="{{ form.username.value|default:'' }}" autocomplete="username" autofocus required></label>
+  <label>Пароль<input type="password" name="password" autocomplete="current-password" required></label>
+  <button class="role {{ role }} submit" type="submit">Войти</button>
+</form>
+<div class="auth-links"><a class="back" href="{% url 'login' %}">← Выбрать другую роль</a>
+<a class="back" href="{% url 'password_reset' %}">Забыли пароль?</a></div>
+{% endblock %}

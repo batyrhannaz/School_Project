@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Должники{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Должники</h1>
+  {% if loans %}
+  <table class="table">
+    <tr><th>Читатель</th><th>Книга</th><th>Срок</th><th>Просрочка</th><th></th></tr>
+    {% for l in loans %}
+    <tr class="overdue">
+      <td>{{ l.user.get_full_name|default:l.user.username }}</td><td>{{ l.copy.book.title }}</td>
+      <td>{{ l.due_date|date:"d.m.Y" }}</td><td>{{ l.days_over }} дн.</td>
+      <td><form method="post" action="{% url 'return_loan' l.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'debtors' %}"><button class="btn ghost-dark">Принять</button></form></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="empty">Просроченных книг нет.</p>{% endif %}
+</section>
+{% endblock %}

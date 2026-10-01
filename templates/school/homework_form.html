@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Новое задание{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Новое домашнее задание</h1>
+  <form method="post" enctype="multipart/form-data" class="form">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn">Опубликовать</button>
+  </form>
+  <p class="muted">Ученики класса и их родители получат уведомление.</p>
+  <p><a href="{% url 'homework' %}">← К списку заданий</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,3 @@
+{% if children|length > 1 %}
+<nav class="tabs">{% for c in children %}<a href="?child={{ c.pk }}" class="{% if c == child %}on{% endif %}">{{ c.get_full_name|default:c.username }}</a>{% endfor %}</nav>
+{% elif child %}<p class="muted">{{ child.get_full_name|default:child.username }}</p>{% endif %}

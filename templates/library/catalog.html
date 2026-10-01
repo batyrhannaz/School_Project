@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Каталог книг{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Каталог книг</h1>
+  <form class="filters" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Название или автор">
+    <select name="category">
+      <option value="">Все категории</option>
+      {% for c in categories %}<option value="{{ c.pk }}" {% if cat == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+    </select>
+    <button class="btn">Найти</button>
+  </form>
+  {% if books %}
+  <div class="grid">
+    {% for b in books %}
+    <a class="card reveal" href="{% url 'book_detail' b.pk %}">
+      {% if b.cover %}<img src="{{ b.cover.url }}" alt="">{% endif %}
+      <h3>{{ b.title }}</h3>
+      <p>{{ b.author }}</p>
+      {% if b.available_count %}<span class="tag ok">В наличии: {{ b.available_count }}</span>
+      {% else %}<span class="tag no">Нет в наличии</span>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}<p class="empty">Ничего не найдено. Измените запрос или сбросьте фильтр.</p>{% endif %}
+</section>
+{% endblock %}

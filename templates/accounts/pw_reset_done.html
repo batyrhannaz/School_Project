@@ -1,0 +1,7 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Письмо отправлено{% endblock %}
+{% block body %}
+<h1>Проверьте почту</h1>
+<p class="sub">Если к этой почте привязан аккаунт, мы отправили на неё ссылку для сброса пароля. Ссылка действует 1 час. Загляните и в папку «Спам».</p>
+<a class="role teacher" href="{% url 'login' %}">Ко входу</a>
+{% endblock %}

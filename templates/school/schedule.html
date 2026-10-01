@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Расписание{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>{% if role == "teacher" %}Мои уроки{% else %}Расписание{% endif %}</h1>
+  {% include "school/_child_tabs.html" %}
+  {% if school_class %}<p class="muted">Класс {{ school_class }}</p>{% endif %}
+  <div class="grid">
+    {% for name, items in days %}
+    <div class="panel reveal {% if name == today_name %}today{% endif %}">
+      <h3>{{ name }}</h3>
+      {% for l in items %}<div class="row"><span class="num">{{ l.number }}</span>
+        <span>{{ l.subject }}{% if role == "teacher" or role == "staff" %} · {{ l.school_class }}{% endif %}</span><small>{{ l.room }}</small></div>
+      {% empty %}<p class="empty">—</p>{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

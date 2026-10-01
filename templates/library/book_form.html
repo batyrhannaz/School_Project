@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Добавить книгу{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Добавить книгу</h1>
+  <form method="post" enctype="multipart/form-data" class="form">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn">Добавить</button>
+  </form>
+  <p class="muted">Экземпляры получат инвентарные номера автоматически.</p>
+</section>
+{% endblock %}

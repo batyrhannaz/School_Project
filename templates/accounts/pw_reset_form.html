@@ -1,0 +1,13 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Сброс пароля{% endblock %}
+{% block body %}
+<h1>Сброс пароля</h1>
+<p class="sub">Введите почту (Gmail), которую вы привязали к аккаунту. Мы отправим ссылку для нового пароля.</p>
+<form method="post" class="auth-form">
+  {% csrf_token %}
+  <label>Почта<input type="email" name="email" placeholder="name@gmail.com" autocomplete="email" autofocus required></label>
+  {% for e in form.email.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  <button class="role teacher submit" type="submit">Отправить ссылку</button>
+</form>
+<div class="auth-links"><a class="back" href="{% url 'login' %}">← Вернуться ко входу</a></div>
+{% endblock %}

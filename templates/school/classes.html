@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Мои классы{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Мои классы</h1>
+  {% for cls, students in items %}
+  <div class="panel reveal"><h3>{{ cls }}</h3>
+    {% for p in students %}<div class="row"><span>{{ p.user.get_full_name|default:p.user.username }}</span>
+      <a href="{% url 'add_grade' %}?student={{ p.user.pk }}">Поставить оценку</a></div>
+    {% empty %}<p class="empty">В классе пока нет учеников.</p>{% endfor %}
+  </div>
+  {% empty %}<p class="empty">Классы не назначены. Их добавляет администратор.</p>{% endfor %}
+</section>
+{% endblock %}

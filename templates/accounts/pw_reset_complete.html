@@ -1,0 +1,7 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Пароль изменён{% endblock %}
+{% block body %}
+<h1>Готово</h1>
+<p class="sub">Пароль изменён. Теперь можно войти с новым паролем.</p>
+<a class="role student" href="{% url 'login' %}">Войти</a>
+{% endblock %}

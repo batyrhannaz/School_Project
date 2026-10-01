@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <h1 class="hero-title"><span>Учимся,</span> <span>читаем,</span> <span>растём вместе</span></h1>
+    <p class="hero-sub">Новости школы и электронный каталог библиотеки в одном месте.</p>
+    <div class="hero-actions">
+      <a class="btn" href="{% url 'catalog' %}">Открыть каталог книг</a>
+      <a class="btn ghost" href="{% url 'news_list' %}">Читать новости</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap stats reveal">
+  <div><b data-count="{{ books_count }}">0</b><span>книг в каталоге</span></div>
+  <div><b data-count="{{ news_count }}">0</b><span>новостей опубликовано</span></div>
+</section>
+
+<section class="wrap">
+  <h2>Последние новости</h2>
+  {% if latest_news %}
+  <div class="grid">
+    {% for n in latest_news %}
+    <a class="card reveal" href="{% url 'news_detail' n.pk %}">
+      {% if n.image %}<img src="{{ n.image.url }}" alt="">{% endif %}
+      <h3>{{ n.title }}</h3>
+      <p>{{ n.text|truncatechars:110 }}</p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">Новостей пока нет. Добавьте первую в админке: Новости → Добавить.</p>
+  {% endif %}
+</section>
+{% endblock %}

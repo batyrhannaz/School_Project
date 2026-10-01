@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Двухфакторный вход{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>Двухфакторный вход</h1>
+  {% if enabled %}
+  <p>Сейчас при входе после пароля нужен код из приложения. Чтобы отключить, введите текущий код.</p>
+  <form method="post" class="form">{% csrf_token %}
+    <p><label for="id_code">Код из приложения</label><input type="text" name="code" id="id_code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" required></p>
+    <button class="btn">Отключить</button>
+  </form>
+  {% else %}
+  <ol class="steps">
+    <li>Установите на телефон приложение для кодов: Google Authenticator, Microsoft Authenticator или Authy.</li>
+    <li>В приложении выберите «Добавить аккаунт», затем «Ввести ключ вручную» и введите этот ключ:
+      <p class="key">{{ secret }}</p>
+      <small class="muted">Название аккаунта: {{ user.username }}. Тип ключа: по времени.</small></li>
+    <li>Введите шестизначный код, который покажет приложение:</li>
+  </ol>
+  <form method="post" class="form">{% csrf_token %}
+    <p><input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="000000" required></p>
+    <button class="btn">Включить</button>
+  </form>
+  <details class="muted"><summary>Ссылка для приложений, которые её поддерживают</summary><code>{{ uri }}</code></details>
+  {% endif %}
+  <p><a href="{% url 'settings' %}">← Назад в настройки</a></p>
+</section>
+{% endblock %}

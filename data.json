@@ -1,0 +1,242 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$NOJ7jOtl90sMJEKMC7AkaZ$4NmttjOkeFObnHGsMwArSIrfI5bUyVv/4/PO4/gUUm4=",
+    "last_login": "2026-10-01T12:29:30.073Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-01T11:12:06.857Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$k5sanCUPQnbw26s5Ttdqaa$lzQrLRg4dGc9GNWz5DpJjBWvQoj7Gq0VF9I7einsiUs=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Библеотекарь",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-01T12:14:06Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$olb1Q1LEwDnep3w6YvYXIx$+7vKWbMReVu6Eg+aQI814vD4G04ZXhrK+OYJR8AAssA=",
+    "last_login": "2026-10-01T12:19:05.846Z",
+    "is_superuser": false,
+    "username": "Учитель",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-01T12:15:03.609Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$wLvL8Mi0302QmNju48mPed$jZAegSYGLvGTpVMHzI6z+nruGgEkRAKc5E4pbLx4NHc=",
+    "last_login": "2026-10-01T12:27:14.331Z",
+    "is_superuser": false,
+    "username": "Родитель",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-01T12:15:23.372Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$DbVe2ZAcLOUGgZFkafQ0Lm$rwc8QcV5BuMjGOb+q70Ah51aT+1RZAx5o9NDv3Hgrmk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "Ученик",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-01T12:16:18.496Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.profile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "Библеотекарь"
+    ],
+    "role": "librarian",
+    "school_class": null,
+    "photo": "",
+    "default_child": null,
+    "default_class": null,
+    "notify_grades": false,
+    "notify_books": false,
+    "notify_digest": false,
+    "totp_secret": "",
+    "totp_enabled": false,
+    "children": []
+  }
+},
+{
+  "model": "accounts.profile",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "Учитель"
+    ],
+    "role": "teacher",
+    "school_class": null,
+    "photo": "",
+    "default_child": null,
+    "default_class": null,
+    "notify_grades": true,
+    "notify_books": true,
+    "notify_digest": false,
+    "totp_secret": "",
+    "totp_enabled": false,
+    "children": []
+  }
+},
+{
+  "model": "accounts.profile",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "Родитель"
+    ],
+    "role": "parent",
+    "school_class": null,
+    "photo": "",
+    "default_child": null,
+    "default_class": null,
+    "notify_grades": true,
+    "notify_books": true,
+    "notify_digest": false,
+    "totp_secret": "",
+    "totp_enabled": false,
+    "children": []
+  }
+},
+{
+  "model": "accounts.loginevent",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "created": "2026-10-01T11:20:21.764Z",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  }
+},
+{
+  "model": "accounts.loginevent",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "Учитель"
+    ],
+    "created": "2026-10-01T12:19:05.851Z",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  }
+},
+{
+  "model": "accounts.loginevent",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "Родитель"
+    ],
+    "created": "2026-10-01T12:27:14.338Z",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Linux; Android 17; Xiaomi 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.8037.59 Mobile Safari/537.36"
+  }
+},
+{
+  "model": "accounts.loginevent",
+  "pk": 4,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "created": "2026-10-01T12:29:30.080Z",
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+  }
+},
+{
+  "model": "school.schoolclass",
+  "pk": 1,
+  "fields": {
+    "name": "9Б",
+    "teacher": [
+      "Учитель"
+    ]
+  }
+},
+{
+  "model": "news.news",
+  "pk": 1,
+  "fields": {
+    "title": "Конкурс рисунков",
+    "text": "Объявляем школьный конкурс рисунков! Приглашаем всех учеников 5-11 классов поделиться своим творчеством.\r\n\r\nТема: «Осень в нашей школе».\r\n\r\nУсловия участия:\r\n\r\nработа выполняется на листе формата А4 в любой технике: карандаши, краски, фломастеры, пастель;\r\nна обратной стороне нужно указать фамилию, имя и класс автора;\r\nодна работа от одного участника.\r\n\r\nСроки: работы принимаются до 20.10.26 в кабинете 5 у Учитель.\r\n\r\nПобедители в каждой возрастной группе получат грамоты и призы, а лучшие рисунки украсят школьную выставку. Результаты будут опубликованы на сайте школы.\r\n\r\nЖдём ваши яркие работы!",
+    "image": "news/images_1.jpg",
+    "created": "2026-10-01T12:32:28.791Z"
+  }
+},
+{
+  "model": "library.category",
+  "pk": 1,
+  "fields": {
+    "name": "Роман"
+  }
+},
+{
+  "model": "library.book",
+  "pk": 1,
+  "fields": {
+    "title": "Евгений Онегин",
+    "author": "А. С. Пушкина",
+    "description": "— знаменитый роман в стихах, описывающий жизнь русского дворянства в XIX веке через историю любви и разочарования главного героя",
+    "cover": "covers/images.jpg",
+    "category": 1
+  }
+},
+{
+  "model": "library.bookcopy",
+  "pk": 1,
+  "fields": {
+    "book": 1,
+    "inventory_number": "1",
+    "status": "available"
+  }
+}
+]

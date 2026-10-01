@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Мои выдачи{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Мои выдачи</h1>
+  {% if loans %}
+  <table class="table">
+    <tr>{% if show_reader %}<th>Читатель</th>{% endif %}<th>Книга</th><th>Выдана</th><th>Вернуть до</th><th>Статус</th></tr>
+    {% for l in loans %}
+    <tr {% if l.is_overdue %}class="overdue"{% endif %}>
+      {% if show_reader %}<td>{{ l.user.get_full_name|default:l.user.username }}</td>{% endif %}
+      <td>{{ l.copy.book.title }}</td>
+      <td>{{ l.issued_at|date:"d.m.Y" }}</td>
+      <td>{{ l.due_date|date:"d.m.Y" }}</td>
+      <td>{% if l.returned_at %}Возвращена {{ l.returned_at|date:"d.m.Y" }}{% elif l.is_overdue %}Просрочена{% else %}На руках{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="empty">У вас нет выданных книг. Найдите нужную в каталоге.</p>{% endif %}
+</section>
+{% endblock %}

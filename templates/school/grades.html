@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Оценки{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>{% if role == "parent" %}Оценки детей{% else %}Мои оценки{% endif %}</h1>
+  {% include "school/_child_tabs.html" %}
+  {% if rows %}
+  <table class="table">
+    <tr><th>Предмет</th><th>Оценки</th><th>Средний</th></tr>
+    {% for subject, items, avg in rows %}
+    <tr><td>{{ subject }}</td>
+      <td class="gl">{% for g in items %}<span class="g g{{ g.value }}" title="{{ g.date|date:'d.m.Y' }} {{ g.comment }}">{{ g.value }}</span>{% endfor %}</td>
+      <td><b>{{ avg }}</b></td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="empty">Оценок пока нет.</p>{% endif %}
+</section>
+{% endblock %}

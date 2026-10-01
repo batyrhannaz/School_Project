@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Домашние задания{% endblock %}
+{% block content %}
+<section class="wrap">
+  <h1>Домашние задания</h1>
+  {% include "school/_child_tabs.html" %}
+  {% if can_edit %}<p><a class="btn" href="{% url 'add_homework' %}">Добавить задание</a></p>{% endif %}
+
+  {% for h in upcoming %}
+  <div class="panel reveal">
+    <h3>{{ h.subject }} <small class="muted">{{ h.school_class }}</small></h3>
+    <p class="prose">{{ h.text|linebreaksbr }}</p>
+    <div class="row"><span>Сдать до <b>{{ h.due_date|date:"d.m.Y" }}</b>{% if h.due_date == today %} <span class="tag no">сегодня</span>{% endif %}</span>
+      <small>{{ h.teacher.get_full_name|default:h.teacher.username }}</small></div>
+    {% if h.attachment %}<a href="{{ h.attachment.url }}">Скачать файл</a>{% endif %}
+    {% if can_edit %}
+    <form method="post" action="{% url 'delete_homework' h.pk %}">{% csrf_token %}<button class="btn ghost-dark">Удалить</button></form>
+    {% endif %}
+  </div>
+  {% empty %}<p class="empty">Новых заданий нет.</p>{% endfor %}
+
+  {% if past %}
+  <details class="muted"><summary>Прошедшие задания</summary>
+    {% for h in past %}<div class="row"><span>{{ h.subject }}: {{ h.text|truncatechars:70 }}</span><small>{{ h.due_date|date:"d.m" }}</small></div>{% endfor %}
+  </details>
+  {% endif %}
+</section>
+{% endblock %}

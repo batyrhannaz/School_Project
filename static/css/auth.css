@@ -1,0 +1,59 @@
+* { box-sizing: border-box; }
+body.auth { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 2rem 1.25rem;
+  font-family: "Segoe UI", system-ui, sans-serif; color: #e6eaf0;
+  background: radial-gradient(120% 70% at 0% 0%, #d3dbe6 0%, #62839f 16%, #1d2d3f 42%, #14171c 72%) fixed, #14171c; }
+.auth-card { width: 100%; max-width: 420px; text-align: center; }
+.auth-logo { width: 130px; height: 130px; margin: 0 auto 2.2rem; background: #fff; border-radius: 26px; color: #16283f;
+  display: grid; place-items: center; align-content: center; gap: .3rem; box-shadow: 0 14px 40px #0006;
+  opacity: 0; animation: rise .7s ease forwards; }
+.auth-logo svg { width: 52px; height: 52px; fill: none; stroke: #2f6fed; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.auth-logo span { font: 700 .85rem Georgia, serif; }
+h1 { margin: 0 0 .4rem; font: 700 2rem Georgia, serif; color: #8fb0e0; opacity: 0; animation: rise .7s ease .1s forwards; }
+.sub { margin: 0 0 2rem; color: #8a94a3; opacity: 0; animation: rise .7s ease .2s forwards; }
+
+.roles { display: grid; gap: 1rem; }
+.role { display: flex; align-items: center; justify-content: center; gap: .8rem; height: 68px; border-radius: 20px; border: 0;
+  color: #fff; font: 600 1.15rem "Segoe UI", sans-serif; text-decoration: none; cursor: pointer;
+  box-shadow: 0 8px 22px #0004; opacity: 0; animation: rise .6s ease forwards;
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease; }
+.roles .role:nth-child(1) { animation-delay: .3s; } .roles .role:nth-child(2) { animation-delay: .42s; } .roles .role:nth-child(3) { animation-delay: .54s; }
+.role:hover { transform: translateY(-3px); box-shadow: 0 14px 28px #0006; filter: brightness(1.06); }
+.role:active { transform: translateY(0) scale(.99); }
+.role svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.role.teacher { background: linear-gradient(100deg, #0d9bff, #00bcd8); }
+.role.parent  { background: linear-gradient(100deg, #7aae36, #a6d96a); }
+.role.student { background: linear-gradient(100deg, #f0632b, #ff8048); }
+
+.auth-form { display: grid; gap: 1rem; text-align: left; opacity: 0; animation: rise .7s ease .3s forwards; }
+.auth-form label { display: grid; gap: .35rem; color: #aab3c0; font-size: .9rem; }
+.auth-form input { height: 50px; border-radius: 14px; border: 1px solid #ffffff26; background: #ffffff12; color: #fff;
+  padding: 0 1rem; font: 1rem "Segoe UI", sans-serif; }
+.auth-form input:focus { outline: 3px solid #5b9bff; outline-offset: 1px; }
+.role.submit { width: 100%; margin-top: .5rem; opacity: 1; animation: none; }
+.error { margin: 0; padding: .7rem 1rem; border-radius: 12px; background: #5a1f1f; color: #ffd0cc; font-size: .92rem; }
+.back { display: inline-block; margin-top: 1.5rem; color: #8fb0e0; text-decoration: none; }
+.back:hover { text-decoration: underline; }
+.auth-foot { margin-top: 2.5rem; color: #6b7684; font-size: .85rem; }
+a:focus-visible { outline: 3px solid #5b9bff; outline-offset: 3px; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .auth-logo, h1, .sub, .role, .auth-form { opacity: 1; }
+}
+
+.auth-links { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+.auth-links .back { margin-top: 0; }
+.auth-form .error { margin: 0; }
+.help { color: #737e8d; font-size: .8rem; }
+.help ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+.sub + .role { max-width: 100%; }
+
+.role.librarian { background: linear-gradient(100deg, #6f4df0, #a98bff); }
+.roles .role:nth-child(4) { animation-delay: .66s; }
+
+.lang { margin-top: 2rem; }
+.lang select { background: #ffffff14; color: #e6eaf0; border: 1px solid #ffffff26; border-radius: 99px; padding: .55rem 1.1rem;
+  font: 600 .95rem "Segoe UI", sans-serif; cursor: pointer; }
+.lang select option { color: #14171c; }
+.lang + .auth-foot { margin-top: 1rem; }
