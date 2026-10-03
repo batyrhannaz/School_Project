@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Attendance, Grade, Homework, Lesson, SchoolClass, Subject
+from .models import Announcement, Attendance, Grade, Homework, Lesson, SchoolClass, Subject
 
 admin.site.register(SchoolClass)
 admin.site.register(Subject)
@@ -29,3 +29,9 @@ class AttendanceAdmin(admin.ModelAdmin):
     list_display = ("student", "subject", "date", "status")
     list_filter = ("status", "date")
     search_fields = ("student__username", "student__last_name")
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ("title", "school_class", "author", "created")
+    list_filter = ("school_class",)
+    search_fields = ("title", "text")

@@ -57,3 +57,17 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.text
+
+class LoginFailure(models.Model):
+    """Неудачная попытка входа. Нужна для временной блокировки после нескольких ошибок подряд."""
+    username = models.CharField("Логин", max_length=150, db_index=True)
+    ip = models.GenericIPAddressField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created"]
+        verbose_name = "Неудачная попытка входа"
+        verbose_name_plural = "Неудачные попытки входа"
+
+    def __str__(self):
+        return "%s · %s" % (self.username, self.created.strftime("%d.%m.%Y %H:%M"))

@@ -12,4 +12,7 @@ urlpatterns = [
     path("homework/<int:pk>/delete/", views.delete_homework, name="delete_homework"),
     path("attendance/", views.attendance, name="attendance"),
     path("attendance/mark/", views.mark_attendance, name="mark_attendance"),
+    path("announcements/", views.announcements, name="announcements"),
+    path("announcements/add/", views.add_announcement, name="add_announcement"),
+    path("announcements/<int:pk>/delete/", views.delete_announcement, name="delete_announcement"),
 ]

@@ -111,3 +111,21 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.student} · {self.date} · {self.get_status_display()}"
+
+class Announcement(models.Model):
+    school_class = models.ForeignKey(SchoolClass, verbose_name="Класс", null=True, blank=True,
+                                     on_delete=models.CASCADE, related_name="announcements",
+                                     help_text="Пусто: объявление для всей школы")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name="Автор", null=True, blank=True,
+                               on_delete=models.SET_NULL, related_name="+")
+    title = models.CharField("Заголовок", max_length=150)
+    text = models.TextField("Текст")
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created", "-id"]
+        verbose_name = "Объявление"
+        verbose_name_plural = "Объявления"
+
+    def __str__(self):
+        return "%s · %s" % (self.school_class or "Вся школа", self.title)

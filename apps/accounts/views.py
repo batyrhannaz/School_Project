@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sessions.models import Session
 from django.core import signing
@@ -20,6 +19,7 @@ from django.views.decorators.http import require_POST
 from apps.library.models import Loan
 from apps.school.models import Grade, SchoolClass
 from . import totp
+from .lockout import LockoutAuthenticationForm
 from .models import LoginEvent, Notification
 from .roles import role_of
 
@@ -46,7 +46,7 @@ def role_login(request, role):
         raise Http404
     if request.user.is_authenticated:
         return redirect("cabinet")
-    form = AuthenticationForm(request, data=request.POST or None)
+    form = LockoutAuthenticationForm(request, data=request.POST or None)
     nxt = request.POST.get("next") or request.GET.get("next", "")
     if request.method == "POST" and form.is_valid():
         user = form.get_user()

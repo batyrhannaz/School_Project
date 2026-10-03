@@ -5,6 +5,12 @@
   <h1>Здравствуйте, {{ user.get_full_name|default:user.username }}!</h1>
   <p class="muted">{{ today|date:"l, j E Y" }}</p>
 
+  {% if announcements %}
+  <div class="panel reveal"><h3>Объявления</h3>
+    {% for a in announcements %}<div class="row"><span><b>{{ a.title }}</b>{% if a.school_class %} <small class="muted">{{ a.school_class }}</small>{% endif %}</span><small>{{ a.created|date:"d.m" }}</small></div>{% endfor %}
+    <a href="{% url 'announcements' %}">Все объявления</a></div>
+  {% endif %}
+
   {% if role == "student" %}
   <p>Класс: <b>{{ school_class|default:"не назначен, обратитесь к администратору" }}</b></p>
   <div class="cols">

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Grade, Homework
+from .models import Announcement, Grade, Homework
 
 User = get_user_model()
 
@@ -33,3 +33,22 @@ class HomeworkForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if classes is not None:
             self.fields["school_class"].queryset = classes
+
+
+class AnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        fields = ["school_class", "title", "text"]
+        widgets = {"text": forms.Textarea(attrs={"rows": 5})}
+
+    def __init__(self, *args, classes=None, allow_school=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        field = self.fields["school_class"]
+        if classes is not None:
+            field.queryset = classes
+        if allow_school:
+            field.required = False
+            field.empty_label = "Вся школа"
+        else:
+            field.required = True
+            field.empty_label = None

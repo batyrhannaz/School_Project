@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from .models import LoginEvent, Profile
-
+from .models import LoginEvent, LoginFailure, Profile
 User = get_user_model()
 
 
@@ -28,3 +27,13 @@ class SchoolUserAdmin(UserAdmin):
 class LoginEventAdmin(admin.ModelAdmin):
     list_display = ("user", "created", "ip")
     readonly_fields = ("user", "created", "ip", "user_agent")
+
+@admin.register(LoginFailure)
+class LoginFailureAdmin(admin.ModelAdmin):
+    """Пока у логина 5 свежих записей, вход закрыт. Чтобы разблокировать сразу, удалите записи этого логина."""
+    list_display = ("username", "created", "ip")
+    search_fields = ("username",)
+    readonly_fields = ("username", "created", "ip")
+
+    def has_add_permission(self, request):
+        return False

@@ -15,8 +15,8 @@ from apps.accounts.models import Profile
 from apps.accounts.notify import guardians_and_student, notify
 from apps.accounts.roles import class_of, role_of
 from apps.library.models import Loan
-from .forms import GradeForm, HomeworkForm
-from .models import WEEKDAYS, Attendance, Grade, Homework, Lesson, SchoolClass, Subject
+from .forms import AnnouncementForm, GradeForm, HomeworkForm
+from .models import WEEKDAYS, Announcement, Attendance, Grade, Homework, Lesson, SchoolClass, Subject
 from .notify import notify_grade
 
 User = get_user_model()
@@ -44,12 +44,29 @@ def only_teachers(user):
     if role_of(user) not in ("teacher", "staff"):
         raise PermissionDenied
 
+def announcements_for(user, role):
+    """Объявления, которые видит пользователь: для всей школы + для его классов (+ свои, если учитель)."""
+    qs = Announcement.objects.select_related("school_class", "author")
+    if role == "staff":
+        return qs
+    class_ids = []
+    if role == "student":
+        cls = class_of(user)
+        class_ids = [cls.pk] if cls else []
+    elif role == "parent":
+        class_ids = [c.pk for c in (class_of(child) for child in user.profile.children.all()) if c]
+    elif role == "teacher":
+        class_ids = list(teacher_classes(user, role).values_list("pk", flat=True))
+    cond = Q(school_class__isnull=True) | Q(school_class_id__in=class_ids)
+    if role == "teacher":
+        cond |= Q(author=user)
+    return qs.filter(cond)
 
 @login_required
 def cabinet(request):
     user, role = request.user, role_of(request.user)
     today = timezone.localdate()
-    ctx = {"today": today}
+    ctx = {"today": today, "announcements": announcements_for(user, role)[:3]}
     if role == "student":
         cls = class_of(user)
         ctx["school_class"] = cls
@@ -84,6 +101,7 @@ def cabinet(request):
         ctx["overdue_count"] = overdue.count()
         ctx["overdue"] = overdue.select_related("user", "copy__book").order_by("due_date")[:5]
     return render(request, "school/cabinet.html", ctx)
+
 
 
 @login_required
@@ -281,3 +299,47 @@ def mark_attendance(request):
         "classes": classes_qs, "subjects": Subject.objects.all(), "cls": cls, "subject": subject,
         "date": date, "students": students, "statuses": Attendance.STATUSES,
     })
+
+# ---------- объявления ----------
+@login_required
+def announcements(request):
+    user, role = request.user, role_of(request.user)
+    return render(request, "school/announcements.html", {
+        "items": announcements_for(user, role)[:50],
+        "can_edit": role in ("teacher", "staff"),
+        "is_staff_role": role == "staff",
+    })
+
+
+@login_required
+def add_announcement(request):
+    only_teachers(request.user)
+    role = role_of(request.user)
+    form = AnnouncementForm(request.POST or None, classes=teacher_classes(request.user, role),
+                            allow_school=(role == "staff"))
+    if request.method == "POST" and form.is_valid():
+        ann = form.save(commit=False)
+        ann.author = request.user
+        ann.save()
+        if ann.school_class:
+            students = list(User.objects.filter(profile__school_class=ann.school_class, profile__role="student"))
+            parents = [p.user for p in Profile.objects.filter(children__in=students).select_related("user").distinct()]
+            recipients = students + parents
+        else:
+            recipients = list(User.objects.filter(is_active=True, profile__role__in=["student", "parent", "teacher"])
+                              .exclude(pk=request.user.pk))
+        notify(recipients, "Объявление: %s" % ann.title, reverse("announcements"))
+        messages.success(request, "Объявление опубликовано: %s." % (ann.school_class or "для всей школы"))
+        return redirect("announcements")
+    return render(request, "school/announcement_form.html", {"form": form})
+
+
+@login_required
+@require_POST
+def delete_announcement(request, pk):
+    ann = get_object_or_404(Announcement, pk=pk)
+    if role_of(request.user) != "staff" and ann.author_id != request.user.pk:
+        raise PermissionDenied
+    ann.delete()
+    messages.success(request, "Объявление удалено.")
+    return redirect("announcements")

@@ -34,7 +34,7 @@
     <li><a href="{% url 'notifications' %}" {% if u == 'notifications' %}class="active"{% endif %} title="Уведомления">
       <svg viewBox="0 0 24 24"><path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21h4"/></svg><span class="label">Уведомления</span>
       {% if unread %}<span class="badge">{{ unread }}</span>{% endif %}</a></li>
-    {% if role == 'student' %}
+        {% include 'includes/side_link.html' with url='announcements' label='Объявления' d='M4 10v4h3l6 4V6L7 10zM16 9a4 4 0 010 6' also='add_announcement' %}
       {% include 'includes/side_link.html' with url='schedule' label='Расписание' d='M5 6h14a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1zM4 10h16M8 3v4M16 3v4' %}
       {% include 'includes/side_link.html' with url='homework' label='Домашние задания' d='M6 3h9l4 4v14H6zM14 3v5h5M9 13h6M9 17h6' %}
       {% include 'includes/side_link.html' with url='grades' label='Оценки' d='M12 4l2.4 5 5.6.7-4.1 3.8 1.1 5.5L12 16.3 7 19l1.1-5.5L4 9.7l5.6-.7z' %}
