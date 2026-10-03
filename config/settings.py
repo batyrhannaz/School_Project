@@ -4,13 +4,11 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "dev-only-key-change-before-deploy"
-DEBUG = os.environ.get("DEBUG") == "1"
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-only-key-change-before-deploy")
 RENDER_HOST = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
-if RENDER_HOST:
-    ALLOWED_HOSTS.append(RENDER_HOST)
-    CSRF_TRUSTED_ORIGINS = ["https://" + RENDER_HOST]
+# локально отладка включена сама, на Render выключена (если не задать DEBUG=1)
+DEBUG = os.environ.get("DEBUG", "0" if RENDER_HOST else "1") == "1"
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -73,7 +71,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
-}   
+}
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
