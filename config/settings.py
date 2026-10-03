@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "dev-only-key-change-before-deploy")
 RENDER_HOST = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 # локально отладка включена сама, на Render выключена (если не задать DEBUG=1)
 DEBUG = os.environ.get("DEBUG", "0" if RENDER_HOST else "1") == "1"
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"] + [h for h in os.environ.get("EXTRA_HOSTS", "").split(",") if h]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
